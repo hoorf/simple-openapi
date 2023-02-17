@@ -1,11 +1,14 @@
 package org.github.hoorf.openapi.core.trans.impl;
 
-import org.github.hoorf.openapi.core.bean.OpenApiRequest;
 import org.github.hoorf.openapi.core.trans.BaseTransService;
+import org.github.hoorf.openapi.core.trans.TransCodeEnum;
+import org.springframework.stereotype.Service;
 
-public class BaseTrans100Service extends BaseTransService {
-    
-    public BaseTrans100Service(OpenApiRequest request) {
-        super(request);
+@Service
+public class BaseTrans100Service<BasicTwoTransInput, BasicTransOutput> extends BaseTransService {
+
+    @Override
+    public String getCode() {
+        return TransCodeEnum.TRANS_100.getCode();
     }
 }

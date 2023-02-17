@@ -1,4 +1,9 @@
 package org.github.hoorf.openapi.core.trans.io;
 
-public interface TransInput {
+import lombok.Data;
+
+@Data
+public class TransInput {
+    
+    private String transCode;
 }
