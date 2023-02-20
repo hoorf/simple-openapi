@@ -1,0 +1,13 @@
+POST http://localhost:8080/openapi/execute.do
+Content-Type: application/json
+
+{
+  "merchantNo": "202300000000001",
+  "transCode": "100",
+  "biz": {
+    "name": "张三",
+    "idCard": "440443199902030452"
+  }
+}
+
+###

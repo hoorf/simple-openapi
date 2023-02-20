@@ -1,6 +1,7 @@
 package org.github.hoorf.openapi.controller;
 
 import cn.hutool.core.collection.CollUtil;
+import com.alibaba.fastjson.JSON;
 import org.github.hoorf.openapi.core.bean.OpenApiRequest;
 import org.github.hoorf.openapi.core.bean.OpenApiResponse;
 import org.github.hoorf.openapi.core.bean.RequestContext;
@@ -26,13 +27,18 @@ public class OpenController {
 
     @Autowired
     private ChannelRuleService channelRuleService;
+    @Autowired
+    List<TransService> transServices;
+    @Autowired
+    List<ChannelService> channelServices;
 
     private static Map<String, TransService> transServiceMap;
 
     private static Map<String, ChannelService> channelServiceMap;
 
+
     @PostConstruct
-    public void init(@Autowired List<TransService> transServices, @Autowired List<ChannelService> channelServices) {
+    public void init() {
         transServiceMap = transServices.stream().collect(Collectors.toMap(TransService::getCode, Function.identity()));
         channelServiceMap = channelServices.stream().collect(Collectors.toMap(ChannelService::getCode, Function.identity()));
     }
@@ -50,7 +56,7 @@ public class OpenController {
                 transService.setChannelService(channelService);
                 ResponseContext responseContext = transService.start(context);
                 if (responseContext.getFinish()) {
-                    return buildResponse(responseContext,response);
+                    return buildResponse(responseContext, response);
                 }
             }
         }
@@ -58,12 +64,17 @@ public class OpenController {
     }
 
     private OpenApiResponse buildResponse(ResponseContext responseContext, OpenApiResponse response) {
-        return null;
+        response.setCode(responseContext.getResultCode());
+        response.setMsg(responseContext.getResultMsg());
+        response.setData(JSON.parseObject(JSON.toJSONString(responseContext.getData()), Map.class));
+        return response;
     }
 
     private RequestContext buildContext(OpenApiRequest request) {
         RequestContext context = new RequestContext();
-        context.setBiz(new HashMap<>(request.getBiz()));
+        if (null != request.getBiz()) {
+            context.setBiz(new HashMap<>(request.getBiz()));
+        }
         context.setMerchantNo(request.getMerchantNo());
         context.setTransCode(request.getTransCode());
         return context;
