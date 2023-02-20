@@ -36,9 +36,12 @@ public abstract class BaseTransService<I extends TransInput, O extends TransOutp
         } catch (Exception e) {
             e.printStackTrace();
         }
-        BeanUtils.copyProperties(context.getBiz(), o);
+        String transCode = context.getTransCode();
+        i.setTransCode(transCode);
+        BeanUtils.copyProperties(context.getBiz(), i);
         try {
             channelService.run(i, o);
+            responseContext.setFinish(true);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
